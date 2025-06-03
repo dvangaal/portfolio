@@ -1,9 +1,9 @@
-name: Deploy via SSH to Hostinger
+name: Deploy /dist/ folder to Hostinger
 
 on:
   push:
     branches:
-      - main  # Change if your default branch is different
+      - main  # Change this if your default branch is different
 
 jobs:
   deploy:
@@ -20,10 +20,8 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Deploy via rsync over SSH
+      - name: Deploy /dist/ to Hostinger via rsync over SSH
         run: |
-          rsync -avz -e "ssh -p ${{ secrets.SSH_PORT }} -i ~/.ssh/id_ed25519" ./ \
+          rsync -avz -e "ssh -p ${{ secrets.SSH_PORT }} -i ~/.ssh/id_ed25519" ./dist/ \
             ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.REMOTE_DIR }} \
-            --delete \
-            --exclude '.git' \
-            --exclude '.github'
+            --delete
